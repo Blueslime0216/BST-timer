@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>타이머</title>
+  <style>
+    body{
+      overflow: hidden;
+      background-color: var(--bodyBackgroundColor);
+    }
+    button, input{
+      width: 80vw;
+      height: 20vw;
+      text-align: center;
+      font-size: 10vw;
+      color: var(--textColor);
+      margin: 2vw;
+      border: 0px;
+      background-color: var(--backgroundColor);
+      border-radius: 20px;
+    }
+    #main_div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #timer {
+      color: var(--backgroundColor);
+      background-color: var(--textColor);
+      font-size: 20vw;
+    }
+    :focus {
+      outline: none;
+      border: none;
+    }
+    #timer::selection {
+      background-color: var(--backgroundColor);
+      color: var(--textColor);
+    }
+    .disableClick{
+      background-color: var(--disableBackgroundColor);
+    }
+    :root {
+      --bodyBackgroundColor: #FCEDDA;
+      --backgroundColor: #ee8757;
+      --disableBackgroundColor: #aaaaaa;
+      --textColor: #FCEDDA;
+    }
+  </style>
+</head>
+<body>
+  <div id="main_div">
+    <input type="text" id="timer">
+    <button id="startBtn" onclick="toggleTimer()">START</button>
+    <button id="resetBtn" class="disableClick" onclick="resetTimer()">RESET</button>
+  </div>
+
+  <script>
+    let intervalId;
+    let inputTime = "00:02";
+    document.getElementById("timer").value = inputTime;
+    let prefix = '';
+    let prefix2 = '';
+    let isTimerRunning = false;
+
+    function toggleTimer() {
+      const startBtn = document.getElementById('startBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      
+      if (isTimerRunning) {
+        clearInterval(intervalId);
+        isTimerRunning = false;
+        startBtn.textContent = 'RESTART';
+        resetBtn.classList.remove("disableClick");
+      } else {
+        startBtn.textContent = 'STOP';
+        startCountdown();
+        isTimerRunning = true;
+        resetBtn.classList.add("disableClick");
+      }
+    }
+
+    function resetTimer() {
+      document.getElementById('startBtn').textContent = 'START';
+      document.getElementById("timer").value = inputTime;
+      clearInterval(intervalId);
+      isTimerRunning = false;
+      resetBtn.classList.add("disableClick");
+      prefix = '';
+      prefix2 = '';
+    }
+
+    function startCountdown() {
+      const timerInput = document.getElementById('timer');
+      if (isTimerRunning){
+        inputTime = document.getElementById("timer").value;
+      }
+      let [minutes, seconds] = timerInput.value.split(':').map(Number);
+      intervalId = setInterval(() => {
+        if (prefix == '' && minutes == 0 && seconds == 0) {
+          prefix = '- ';
+          prefix2 = '  ';
+        }
+        if (prefix == '') {
+          if (seconds === 0) {
+            minutes--;
+            seconds = 59;
+          } else {
+            seconds--;
+          }
+        } else {
+          if (seconds === 59) {
+            minutes++;
+            seconds = 0;
+          } else {
+            seconds++;
+          }
+        }
+        const formattedMinutes = Math.abs(minutes).toString().padStart(2, '0');
+        const formattedSeconds = Math.abs(seconds).toString().padStart(2, '0');
+        timerInput.value = `${prefix}${formattedMinutes}:${formattedSeconds}${prefix2}`;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
