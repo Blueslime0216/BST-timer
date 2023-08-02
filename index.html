@@ -8,15 +8,16 @@
       background-color: var(--bodyBackgroundColor);
     }
     button, input{
-      width: 80vw;
-      height: 20vw;
+      width: min(80vw, 80vh);
+      height: min(20vw, 20vh);
       text-align: center;
-      font-size: 10vw;
+      font-size: min(10vw, 10vh);
       color: var(--textColor);
       margin: 2vw;
       border: 0px;
       background-color: var(--backgroundColor);
-      border-radius: 20px;
+      border-radius: min(4vw, 4vh);
+      cursor: pointer;
     }
     #main_div {
       display: flex;
@@ -28,7 +29,8 @@
     #timer {
       color: var(--backgroundColor);
       background-color: var(--textColor);
-      font-size: 20vw;
+      font-size: min(20vw, 20vh);
+      cursor: text;
     }
     :focus {
       outline: none;
@@ -40,6 +42,7 @@
     }
     .disableClick{
       background-color: var(--disableBackgroundColor);
+      cursor: default;
     }
     :root {
       --bodyBackgroundColor: #FCEDDA;
@@ -58,26 +61,27 @@
 
   <script>
     let intervalId;
-    let inputTime = "00:02";
+    let inputTime = "00:05"; //초기값
     document.getElementById("timer").value = inputTime;
     let prefix = '';
     let prefix2 = '';
     let isTimerRunning = false;
 
+    const startBtn = document.getElementById('startBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const timerInput = document.getElementById('timer');
+
     function toggleTimer() {
-      const startBtn = document.getElementById('startBtn');
-      const resetBtn = document.getElementById('resetBtn');
-      
       if (isTimerRunning) {
         clearInterval(intervalId);
         isTimerRunning = false;
         startBtn.textContent = 'RESTART';
         resetBtn.classList.remove("disableClick");
       } else {
-        startBtn.textContent = 'STOP';
         startCountdown();
+        startBtn.textContent = 'STOP';
         isTimerRunning = true;
-        resetBtn.classList.add("disableClick");
+        resetBtn.classList.remove("disableClick");
       }
     }
 
@@ -92,11 +96,12 @@
     }
 
     function startCountdown() {
-      const timerInput = document.getElementById('timer');
-      if (isTimerRunning){
+      if (!isTimerRunning && startBtn.textContent == 'START'){
         inputTime = document.getElementById("timer").value;
+        timerInput.classList.add("disableClick");
       }
-      let [minutes, seconds] = timerInput.value.split(':').map(Number);
+      let [minutes, seconds] = timerInput.value.replace(' ', '').split(':').map(Number);
+      alert(minutes+":"+seconds)
       intervalId = setInterval(() => {
         if (prefix == '' && minutes == 0 && seconds == 0) {
           prefix = '- ';
