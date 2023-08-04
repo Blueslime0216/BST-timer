@@ -101,7 +101,6 @@
         timerInput.classList.add("disableClick");
       }
       let [minutes, seconds] = timerInput.value.replace(' ', '').split(':').map(Number);
-      alert(minutes+":"+seconds)
       intervalId = setInterval(() => {
         if (prefix == '' && minutes == 0 && seconds == 0) {
           prefix = '- ';
